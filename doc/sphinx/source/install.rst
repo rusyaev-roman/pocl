@@ -92,10 +92,12 @@ CMake host flags
 
 Compile C:
   CMAKE_C_FLAGS
+
   CMAKE_C_FLAGS_<build-type>
 
 Compile C++:
   CMAKE_CXX_FLAGS
+
   CMAKE_CXX_FLAGS_<build-type>
 
 Building kernels and the kernel library, i.e. target flags

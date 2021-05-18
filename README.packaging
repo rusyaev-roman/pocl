@@ -4,7 +4,7 @@ ICD
 ---
 Pocl should probably be built with ICD enabled (``-DENABLE_ICD=ON`` CMake
 option) for desktop distributions. Pocl does not have an ICD loader,
-so a dependancy on one would be beneficial.
+so a dependency on one would be beneficial.
 
 CMake options for a distribution build
 --------------------------------------
@@ -27,7 +27,7 @@ CMake options for a distribution build
 
 Mesa (OpenGL) interoperability
 ------------------------------
-On some current (Jan 2014) Linux distibutions, mesa is built with LLVMpipe. 
+On some current (Jan 2014) Linux distributions, mesa is built with LLVMpipe.
 If pocl is built against a shared LLVM library, the mesa calls to its LLVM
 will be re-routed to the LLVM linked in pocl, causing a segfault. Consider
 linking LLVM statically to pocl. At least 'nouveau' and 'swrast_dri' are 

@@ -61,7 +61,7 @@ the pkg-config::
    gcc example1.c -o example `pkg-config --libs --cflags pocl`
 
 In this link mode, your program will always require the pocl OpenCL library. It
-wont be able to run with another OpenCL implementation without recompilation.
+won't be able to run with another OpenCL implementation without recompilation.
 
 Using pocl on MacOSX
 --------------------
@@ -143,7 +143,7 @@ pocl.
   export POCL_TTASIM1_PARAMETERS="/path/to/my/machine1.adf"
 
  Creates three devices, one CPU device with pthread multithreading and two
- TTA device simulated with the ttasim. The ttasim devices gets a path to
+ TTA devices simulated with the ttasim. The ttasim devices gets a path to
  the architecture description file of the tta to simulate as a parameter.
  POCL_TTASIM0_PARAMETERS will be passed to the first ttasim driver instantiated
  and POCL_TTASIM1_PARAMETERS to the second one.

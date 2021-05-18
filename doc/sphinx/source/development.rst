@@ -33,7 +33,7 @@ need to run the following build command once::
 
 IMPORTANT: using the ICD for in tree 'make check' requires an icd
 loader that allows overriding the icd search path. Other ICD loaders
-wont be able to work in tree (they require the ICD config file to be
+won't be able to work in tree (they require the ICD config file to be
 installed in the system).  There are now two options for such a loader:
 the open source ocl-icd loader and the Khronos supplied loader with a
 patch applied.
@@ -150,7 +150,7 @@ with OCL_ICD_VENDORS environment variable.
 Using pocl from the Build Tree
 ------------------------------
 
-If you want use the pocl from the build tree, you must export
+If you want to use the pocl from the build tree, you must export
 POCL_BUILDING=1 so pocl searches for its utility scripts from the
 build tree first, then the installation location. The "make check"
 testsuite does this automatically.

@@ -89,7 +89,7 @@ Conformance status
 ~~~~~~~~~~~~~~~~~~
 
 The Khronos OpenCL 1.2 conformance tests are
-`available here <https://github.com/KhronosGroup/OpenCL-CTS/tree/cl12_trunk>`_.
+`available here <https://github.com/KhronosGroup/OpenCL-CTS>`_.
 The following test categories are known to pass on at least one NVIDIA GPU using
 pocl's CUDA backend:
 
@@ -104,7 +104,7 @@ pocl's CUDA backend:
 * profiling
 * relationals
 * thread_dimensions
-* vec_step
+* vectors
 
 Tested platforms
 ~~~~~~~~~~~~~~~~
