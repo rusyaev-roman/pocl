@@ -1,7 +1,7 @@
 #=============================================================================
 #   CMake build system files
 #
-#   Copyright (c) 2014-2018 pocl developers
+#   Copyright (c) 2016 pocl developers
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a copy
 #   of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,11 @@
 #
 #=============================================================================
 
-set(SOURCES_GENERIC abs.cl
+include("bitcode_rules")
+
+#set(KERNEL_SOURCES ${SOURCES_GENERIC})
+# FIXME: Support below commented kernels (that are being broken now) in clang
+set(KERNEL_SOURCES abs.cl
 abs_diff.cl
 acos.cl
 acosh.cl
@@ -43,7 +47,7 @@ atan2pi.cl
 atanh.cl
 atanpi.cl
 atomics.cl
-barrier.ll
+#barrier.ll
 bitselect.cl
 cbrt.cl
 ceil.cl
@@ -89,19 +93,19 @@ get_work_dim.c
 hadd.cl
 hypot.cl
 ilogb.cl
-isequal.cl
-isfinite.cl
-isgreater.cl
-isgreaterequal.cl
-isinf.cl
-isless.cl
-islessequal.cl
-islessgreater.cl
-isnan.cl
-isnormal.cl
-isnotequal.cl
-isordered.cl
-isunordered.cl
+#isequal.cl
+#isfinite.cl
+#isgreater.cl
+#isgreaterequal.cl
+#isinf.cl
+#isless.cl
+#islessequal.cl
+#islessgreater.cl
+#isnan.cl
+#isnormal.cl
+#isnotequal.cl
+#isordered.cl
+#isunordered.cl
 ldexp.cl
 length.cl
 lgamma.cl
@@ -148,8 +152,8 @@ pow.cl
 pown.cl
 powr.cl
 prefetch.cl
-printf.c
-printf_base.c
+#printf.c
+#printf_base.c
 radians.cl
 recip.cl
 remainder.cl
@@ -178,72 +182,36 @@ tanpi.cl
 tgamma.cl
 trunc.cl
 upsample.cl
-vload.cl
-vload_half.cl
-vstore.cl
-vstore_half.cl
-vload_store_half_f16c.c
+#vload.cl
+#vload_half.cl
+#vstore.cl
+#vstore_half.cl
+#vload_store_half_f16c.c
 wait_group_events.cl)
 
-#*********************************************************************
 
-set(KERNEL_BC_LIST "")
-set(KERNEL_TARGET_LIST "")
+set(CLANG_FLAGS "-emit-llvm" "-target" "neuromatrix")
 
-#*********************************************************************
+set(KERNEL_CL_FLAGS "-Xclang" "-cl-std=CL${NEUROMATRIX_DEVICE_CL_STD}" "-D__OPENCL_C_VERSION__=${NEUROMATRIX_DEVICE_CL_VERSION}" "-Xclang" ${KERNEL_CL_FLAGS})
+set(LLC_FLAGS "")
+set(DEVICE_CL_FLAGS "-D__OPENCL_VERSION__=${NEUROMATRIX_DEVICE_CL_VERSION}")
 
-if(OCL_TARGETS MATCHES "host")
-  add_subdirectory("host")
-endif()
-
-#*********************************************************************
-
-if(OCL_TARGETS MATCHES "tce")
-  add_subdirectory("tce")
-endif()
-
-#*********************************************************************
-
-if(OCL_TARGETS MATCHES "amdgcn")
-  add_subdirectory("amdgcn")
-endif()
-
-if(OCL_TARGETS MATCHES "hsail64")
-  add_subdirectory("hsail64")
-endif()
-
-#*********************************************************************
-
-if(OCL_TARGETS MATCHES "cuda")
-  add_subdirectory("cuda")
-endif()
-
-if(OCL_TARGETS MATCHES "neuromatrix")
-  add_subdirectory("neuromatrix")
-endif()
-
-#*********************************************************************
-
-# "Escape" a list before passing to an external command
-string(REPLACE ";" "****" KERNEL_BC_LIST_ESCAPED "${KERNEL_BC_LIST}")
-
-add_custom_command( OUTPUT "${CMAKE_BINARY_DIR}/kernellib_hash.h"
-  COMMAND "${CMAKE_COMMAND}"
-      -DKERNEL_BC_LIST_ESCAPED='${KERNEL_BC_LIST_ESCAPED}'
-      -DINCLUDEDIR='${CMAKE_SOURCE_DIR}/include'
-      -DOUTPUT='${CMAKE_BINARY_DIR}/kernellib_hash.h'
-      -P "${CMAKE_SOURCE_DIR}/cmake/kernellib_hash.cmake"
-  DEPENDS ${KERNEL_BC_LIST}
-      "${CMAKE_SOURCE_DIR}/include/_kernel.h"
-      "${CMAKE_SOURCE_DIR}/include/_kernel_c.h"
-      "${CMAKE_SOURCE_DIR}/include/_libclang_versions_checks.h"
-      "${CMAKE_SOURCE_DIR}/include/pocl_types.h"
-  COMMENT "Generating SHA1 of all kernel libs..."
-  VERBATIM)
-
-
-add_custom_target("kernellib_hash" ALL
-    DEPENDS "${CMAKE_BINARY_DIR}/kernellib_hash.h")
-foreach(DEP IN LISTS KERNEL_TARGET_LIST)
-  add_dependencies("kernellib_hash" ${DEP})
+separate_arguments(NEUROMATRIX_DEVICE_EXTENSIONS)
+foreach(EXT ${NEUROMATRIX_DEVICE_EXTENSIONS})
+    set(DEVICE_CL_FLAGS "${DEVICE_CL_FLAGS} -D${EXT}")
 endforeach()
+separate_arguments(DEVICE_CL_FLAGS)
+
+make_kernel_bc(KERNEL_BC "neuromatrix" "neuromatrix" 0 0 0 ${KERNEL_SOURCES})
+
+list(APPEND KERNEL_BC_LIST "${KERNEL_BC}")
+set(KERNEL_BC_LIST "${KERNEL_BC_LIST}" PARENT_SCOPE)
+
+# a target is needed...
+add_custom_target("kernel_neuromatrix" DEPENDS ${KERNEL_BC})
+
+list(APPEND KERNEL_TARGET_LIST "kernel_neuromatrix")
+set(KERNEL_TARGET_LIST "${KERNEL_TARGET_LIST}" PARENT_SCOPE)
+
+install(FILES "${KERNEL_BC}"
+        DESTINATION "${POCL_INSTALL_PRIVATE_DATADIR}" COMPONENT "lib")

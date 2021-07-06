@@ -112,6 +112,10 @@ POname(clGetPlatformInfo)(cl_platform_id   platform,
                                ", TCE"
 #endif
 
+#ifdef BUILD_NEUROMATRIX
+                              ", NeuroMatrix"
+#endif
+
 #ifdef HAVE_LTTNG_UST
                                ", LTTNG"
 #endif

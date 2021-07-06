@@ -89,7 +89,7 @@ POP_COMPILER_DIAGS
 cl_device_id currentPoclDevice = NULL;
 
 
-//#define DEBUG_POCL_LLVM_API
+#define DEBUG_POCL_LLVM_API
 
 #if defined(DEBUG_POCL_LLVM_API) && defined(NDEBUG)
 #undef NDEBUG
@@ -863,6 +863,12 @@ static llvm::Module* getKernelLibrary(cl_device_id device)
   if (triple.getArch() == Triple::nvptx ||
       triple.getArch() == Triple::nvptx64) {
     subdir = "cuda";
+    is_host = false;
+  }
+#endif
+#ifdef BUILD_NEUROMATRIX
+  if (triple.getArch() == Triple::neuromatrix) {
+    subdir = "neuromatrix";
     is_host = false;
   }
 #endif

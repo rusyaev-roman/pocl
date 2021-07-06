@@ -62,6 +62,10 @@ if(ENABLE_CUDA)
   add_subdirectory("cuda")
 endif()
 
+if(ENABLE_NEUROMATRIX)
+  add_subdirectory("neuromatrix")
+endif()
+
 set(POCL_DEVICES_SOURCES
   devices.h  devices.c
   bufalloc.c

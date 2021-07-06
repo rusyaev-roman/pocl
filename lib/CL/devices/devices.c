@@ -104,6 +104,9 @@ static init_device_ops pocl_devices_init_ops[] = {
 #if defined(BUILD_ACCEL)
   NULL,
 #endif
+#if defined(BUILD_NEUROMATRIX)
+  NULL,
+#endif
 };
 
 #define POCL_NUM_DEVICE_TYPES (sizeof(pocl_devices_init_ops) / sizeof((pocl_devices_init_ops)[0]))
@@ -126,6 +129,9 @@ char pocl_device_types[POCL_NUM_DEVICE_TYPES][30] = {
 #endif
 #if defined(BUILD_ACCEL)
   "accel",
+#endif
+#if defined(BUILD_NEUROMATRIX)
+  "neuromatrix",
 #endif
 };
 

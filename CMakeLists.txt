@@ -173,6 +173,8 @@ option(ENABLE_HSA "Enable the HSA base profile runtime device driver" OFF)
 
 option(ENABLE_CUDA "Enable the CUDA device driver for NVIDIA devices" OFF)
 
+option(ENABLE_NEUROMATRIX "Enable the NeuroMatrix device driver for NeuroMatrix devices" OFF)
+
 option(KERNEL_CACHE_DEFAULT "Default value for the kernel compile cache. If disabled, pocl will still use the kernel cache, but will delete cachefiles on exit. You can still enable keeping the files it at runtime with an env var." ON)
 
 option(POCL_ICD_ABSOLUTE_PATH "Use absolute path in pocl.icd" ON)
@@ -1260,6 +1262,26 @@ endif()
 
 ##########################################################
 
+##########################################################
+
+if(ENABLE_NEUROMATRIX)
+  if(NOT "${LLVM_ALL_TARGETS}" MATCHES "NeuroMatrix")
+    message(FATAL_ERROR "NeuroMatrix build requested but LLVM does not support NeuroMatrix target!")
+  endif()
+
+  set(OCL_DRIVERS "${OCL_DRIVERS} neuromatrix")
+  set(OCL_TARGETS "${OCL_TARGETS} neuromatrix")
+
+  set(NEUROMATRIX_DEVICE_EXTENSIONS "")
+  set(NEUROMATRIX_DEVICE_CL_VERSION "120")
+  set(NEUROMATRIX_DEVICE_CL_STD "1.2")
+
+  # this is for config.h
+  set(BUILD_NEUROMATRIX 1)
+endif()
+
+##########################################################
+
 message(STATUS "Building the following device drivers: ${OCL_DRIVERS}")
 
 set(BUILDDIR "${CMAKE_BINARY_DIR}")
@@ -1645,6 +1667,7 @@ MESSAGE(STATUS "ENABLE_TCE: ${ENABLE_TCE}")
 MESSAGE(STATUS "ENABLE_TCEMC: ${ENABLE_TCEMC}")
 MESSAGE(STATUS "ENABLE_HSA: ${ENABLE_HSA}")
 MESSAGE(STATUS "ENABLE_CUDA: ${ENABLE_CUDA}")
+MESSAGE(STATUS "ENABLE_NEUROMATRIX: ${ENABLE_NEUROMATRIX}")
 MESSAGE(STATUS "ENABLE_ASAN (address sanitizer): ${ENABLE_ASAN}")
 MESSAGE(STATUS "ENABLE_LSAN (leak sanitizer): ${ENABLE_LSAN}")
 MESSAGE(STATUS "ENABLE_TSAN (thread sanitizer): ${ENABLE_TSAN}")
